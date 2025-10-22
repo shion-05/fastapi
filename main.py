@@ -22,3 +22,8 @@ def get_age(age: int = Query(None)):#Noneで「任意」
 @app.get("/get_profile")
 def get_profile(name: str = Query(...), age: int = Query(None)):
     return {"name": name, "age": age}
+
+#URLパラメータの場合
+@app.get('/get_name2/{name2}/myname')
+def get_name2(name2: str):
+    return {"name": name2}
