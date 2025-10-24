@@ -1,5 +1,6 @@
 # main.py
 from fastapi import FastAPI, Query
+from fastapi import FastAPI, File, UploadFile
 
 app = FastAPI()
 
@@ -36,3 +37,16 @@ def get_profile(
     age: int | None = Query(None)             # 任意クエリ
 ):
     return {"name": name, "name2": name2, "age": age}
+
+#CSVファイルや画像などのファイルの受取
+#from fastapi import FastAPI, File, UploadFile
+@app.post("/upload")
+def upload_file(file: UploadFile = File(...)):
+    # file.fileに実体が入ってくる
+    data = file.file.read()  # 読み出すとポインタが末尾になる点に注意（再利用するならseek(0)が必要）
+    return {
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size": len(data)
+    }
+
