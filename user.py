@@ -1,8 +1,8 @@
-# item.py
+# user.py
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["users"])
 
-@router.get("/item")
-def get_item():
-    return {"item": "Book"}
+@router.get("/user")
+def get_users():
+    return {"name": "yamada"}
