@@ -1,6 +1,7 @@
 # main.py
 from fastapi import FastAPI, Query
 from fastapi import FastAPI, File, UploadFile
+import user, item
 
 app = FastAPI()
 
@@ -50,3 +51,5 @@ def upload_file(file: UploadFile = File(...)):
         "size": len(data)
     }
 
+app.include_router(user.router)
+app.include_router(item.router, prefix="/items", tags=["items"])
