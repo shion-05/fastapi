@@ -53,5 +53,23 @@ def upload_file(file: UploadFile = File(...)):
         "size": len(data)
     }
 
+#ルーティングをまとめる
 app.include_router(user.router)
 app.include_router(item.router, prefix="/items", tags=["items"])
+
+#非同期処理
+@app.get("/async_demo")
+async def async_demo():
+    # 10回出力
+    for i in range(1, 11):
+        print(f"{datetime.now()}, {i}: 即時出力")
+
+    # ”delayed_line”を実行予約
+    asyncio.create_task(delayed_line())
+
+    # すぐにレスポンスを返す
+    return {"message": f"{datetime.now()}, すぐレスポンスを返すよ"}
+
+async def delayed_line():
+    await asyncio.sleep(5) #この間に”async_demo”が実行
+    print(f"{datetime.now()}, 5秒後に出力されるよ")
