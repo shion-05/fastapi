@@ -1,6 +1,5 @@
 # main.py
-from fastapi import FastAPI, Query
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, Query, File, UploadFile, BackgroundTasks
 import user, item
 import asyncio
 from datetime import datetime
@@ -73,3 +72,14 @@ async def async_demo():
 async def delayed_line():
     await asyncio.sleep(5) #この間に”async_demo”が実行
     print(f"{datetime.now()}, 5秒後に出力されるよ")
+
+#BackgroundTasks
+@app.get("/bg_task")
+async def bg_task(bg: BackgroundTasks):
+    bg.add_task(time_sleep)
+    return {"message": "すぐレスポンスを返すよ"}
+
+def time_sleep():
+    import time
+    time.sleep(5)             # ここは同スレッド実行のため重い処理は避ける
+    print("5秒後に出力されるよ")
