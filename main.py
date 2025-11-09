@@ -1,5 +1,5 @@
 # main.py
-from fastapi import FastAPI, Query, File, UploadFile, BackgroundTasks
+from fastapi import FastAPI, Query, File, UploadFile, BackgroundTasks, Request
 import user, item
 import asyncio
 from datetime import datetime
@@ -83,3 +83,21 @@ def time_sleep():
     import time
     time.sleep(5)             # ここは同スレッド実行のため重い処理は避ける
     print("5秒後に出力されるよ")
+
+#リクエスト前後に処理を挿入する この部分は全ての処理の前後に実行される
+@app.middleware("http")
+async def simple_middleware(request: Request, call_next):
+    # リクエスト前の処理 
+    print(f"リクエスト開始: {request.url.path}")
+
+    # call_next(request) は「次の処理（=実際のエンドポイント）」を呼び出す
+    response = await call_next(request)
+
+    # レスポンス後の処理
+    print("レスポンス完了")
+
+    return response
+
+@app.get("/menu")
+def menu():
+    return {"message": "menuです"}
