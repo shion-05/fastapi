@@ -5,6 +5,7 @@ import asyncio
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from contextlib import asynccontextmanager
 
 app = FastAPI()
 
@@ -133,3 +134,19 @@ class Profile(BaseModel):
 @app.post("/get_profile")
 def get_profile(profile: Profile):
     return {"json": profile.model_dump()}
+
+#サーバの起動/停止時に処理を追加する
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("アプリの起動処理を実行中...")
+
+    yield  # アプリ実行中
+
+    # --- shutdown 相当 ---
+    print("アプリの停止処理を実行中...")
+
+app = FastAPI(lifespan=lifespan) #appの二重定義 本来は一番上に記述
+
+@app.get("/")
+def health():
+    return {"message": "OK"}
