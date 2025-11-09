@@ -3,6 +3,7 @@ from fastapi import FastAPI, Query, File, UploadFile, BackgroundTasks, Request
 import user, item
 import asyncio
 from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -97,6 +98,26 @@ async def simple_middleware(request: Request, call_next):
     print("レスポンス完了")
 
     return response
+
+@app.get("/menu")
+def menu():
+    return {"message": "menuです"}
+
+#CORSの設定
+# 許可するオリジン（フロントエンドのURL）
+origins = [
+    "http://localhost:3000",  # ローカルのReact/Vue開発環境
+    "https://example.com",    # 本番環境のフロントエンド
+]
+
+# CORSMiddleware の追加
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,            # 許可するオリジン
+    allow_credentials=True,           # Cookieや認証情報を含めるか
+    allow_methods=["*"],              # 許可するHTTPメソッド（GET, POSTなど）
+    allow_headers=["*"],              # 許可するHTTPヘッダー
+)
 
 @app.get("/menu")
 def menu():
