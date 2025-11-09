@@ -4,6 +4,7 @@ import user, item
 import asyncio
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -122,3 +123,13 @@ app.add_middleware(
 @app.get("/menu")
 def menu():
     return {"message": "menuです"}
+
+#リクエスト（JSON）のバリデーションチェック
+class Profile(BaseModel):
+    name1: str
+    name2: str = Field(..., min_length=5, max_length=20, description="5文字以上20文字以下")
+    age: int = Field(..., gt=0, description="0より大きい整数")
+
+@app.post("/get_profile")
+def get_profile(profile: Profile):
+    return {"json": profile.model_dump()}
